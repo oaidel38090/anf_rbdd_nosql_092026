@@ -1,0 +1,22 @@
+services:
+
+  jupyterlab:
+      image: jupyter/minimal-notebook
+      restart: always
+      environment:
+        JUPYTER_ENABLE_LAB: "yes"
+        JUPYTER_ALLOW_INSECURE_WRITES: 1
+      command: >
+        sh -c "pip install jupyterlab_myst &&
+              pip install pymongo &&
+              pip install --quiet cassandra-driver &&
+              pip install neo4j &&
+              pip install clickhouse-connect &&
+              start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''"
+      volumes:
+        - ../../:/home/jovyan/rbdd
+      ports:
+        - 2026:8888
+      networks:
+        - datalab
+

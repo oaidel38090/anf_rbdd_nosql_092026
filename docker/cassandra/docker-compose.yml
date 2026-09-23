@@ -1,0 +1,22 @@
+services:
+  cassandra:
+    image: cassandra:4.1
+    container_name: cassandra-tp
+    ports:
+      - "9042:9042"      # port CQL natif
+    environment:
+      - CASSANDRA_CLUSTER_NAME=TP_Cluster
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'describe cluster' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+    networks:
+      - datalab
+
+
+volumes:
+  cassandra_data:

@@ -1,0 +1,420 @@
+services:
+
+
+
+#################################
+# SERVEUR MONO-INSTANCE Mongo
+#################################<
+
+  mongosingle:
+    image: mongo:4.4.6
+    container_name: mongosingle
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongosingle-data:/data/db
+      - ./mongodb:/dataimport
+    networks:
+      - datalab
+
+  loaddatamoviesintomongosingle:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - mongosingle
+    volumes:
+      - ./mongodb:/dataimport
+    networks:
+      - datalab
+    command: >
+      mongoimport --uri 'mongodb://mongosingle:27017' --drop -d training -c movies --jsonArray /dataimport/movies.json
+
+
+#######################################################
+# Configuration d'un cluster MongoDB en replicaset    #
+#######################################################
+
+  mongo1:
+    container_name: mongo1
+    hostname: mongo1
+    image: mongo:4.4.6
+    ports:
+      - 30001:27017
+    command: mongod --replSet my-mongo-set
+    volumes:
+      - mongo1-data:/data/db
+    networks:
+      - datalab
+
+  mongo2:
+    container_name: mongo2
+    hostname: mongo2
+    image: mongo:4.4.6
+    ports:
+      - 30002:27017
+    command: mongod --replSet my-mongo-set
+    volumes:
+      - mongo2-data:/data/db
+    networks:
+      - datalab
+
+  mongo3:
+    container_name: mongo3
+    hostname: mongo3
+    image: mongo:4.4.6
+    ports:
+      - 30003:27017
+    command: mongod --replSet my-mongo-set
+    volumes:
+      - mongo3-data:/data/db
+    networks:
+      - datalab
+
+# finally, we can define the initialization server
+# this runs the `rs.initiate` command to intialize
+# the replica set and connect the three servers to each other
+  mongoinit:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+    networks:
+      - datalab
+    command: >
+      mongo --host mongo1:27017 --eval
+      '
+      config = {
+      "_id" : "my-mongo-set",
+      "members" : [
+        {
+          "_id" : 0,
+          "host" : "mongo1:27017"
+        },
+        {
+          "_id" : 1,
+          "host" : "mongo2:27017"
+        },
+        {
+          "_id" : 2,
+          "host" : "mongo3:27017"
+        }
+      ]
+      };
+      rs.initiate(config);
+      '
+
+  mongoconfigsinit:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - configs1
+      - configs2
+      - configs3
+    networks:
+      - datalab
+    command: >
+      mongo --host configs1:27017 --eval
+      '
+      config = {
+      "_id" : "cfgrs",
+      "configsvr": true,
+      "members" : [
+        {
+          "_id" : 0,
+          "host" : "configs1:27017"
+        },
+        {
+          "_id" : 1,
+          "host" : "configs2:27017"
+        },
+        {
+          "_id" : 2,
+          "host" : "configs3:27017"
+        }
+      ]
+      };
+      rs.initiate(config);
+      '
+
+
+  mongoshard1init:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - shard1s1
+      - shard1s2
+      - shard1s3
+    networks:
+      - datalab
+    command: >
+      mongo --host shard1s1:27017 --eval
+      '
+      config = {
+      "_id" : "shard1rs",
+      "members" : [
+        {
+          "_id" : 0,
+          "host" : "shard1s1:27017"
+        },
+        {
+          "_id" : 1,
+          "host" : "shard1s2:27017"
+        },
+        {
+          "_id" : 2,
+          "host" : "shard1s3:27017"
+        }
+      ]
+      };
+      rs.initiate(config);
+      '
+
+  mongoshard2init:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - shard2s1
+      - shard2s2
+      - shard2s3
+    networks:
+      - datalab
+    command: >
+      mongo --host shard2s1:27017 --eval
+      '
+      config = {
+      "_id" : "shard2rs",
+      "members" : [
+        {
+          "_id" : 0,
+          "host" : "shard2s1:27017"
+        },
+        {
+          "_id" : 1,
+          "host" : "shard2s2:27017"
+        },
+        {
+          "_id" : 2,
+          "host" : "shard2s3:27017"
+        }
+      ]
+      };
+      rs.initiate(config);
+      '
+
+  mongodataimport:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+    volumes:
+      - ./mongodb:/dataimport
+    networks:
+      - datalab
+    command: >
+      mongoimport --uri 'mongodb://mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=my-mongo-set' -d training -c movies --jsonArray /dataimport/movies.json
+     # mongorestore --uri "mongodb://mongo1:27017,john.mongo2:27017,mongo3:27017/?replicaSet=my-mongo-set" -d training -c movies /dataimport
+
+
+#######################################################
+# Configuration d'un cluster MongoDB en sharding     #
+#######################################################
+
+#------------- Configuration d'un replica set pour le service de configuration du cluster
+
+  configs1:
+    container_name: configs1
+    image: mongo:4.4.6
+    hostname: configs1
+    command: mongod --configsvr --replSet cfgrs --port 27017 --dbpath /data/db
+    ports:
+      - 10001:27017
+    volumes:
+      - configs1:/data/db
+    networks:
+      - datalab
+
+  configs2:
+    container_name: configs2
+    hostname: configs2
+    image: mongo:4.4.6
+    command: mongod --configsvr --replSet cfgrs --port 27017 --dbpath /data/db
+    ports:
+      - 10002:27017
+    volumes:
+      - configs2:/data/db
+    networks:
+      - datalab
+
+  configs3:
+    container_name: configs3
+    hostname: configs3
+    image: mongo:4.4.6
+    command: mongod --configsvr --replSet cfgrs --port 27017 --dbpath /data/db
+    ports:
+      - 10003:27017
+    volumes:
+      - configs3:/data/db
+    networks:
+      - datalab
+
+
+#------------- Configuration d'un premier replica set  shard1rs
+
+  shard1s1:
+    container_name: shard1s1
+    image: mongo:4.4.6
+    hostname: shard1s1
+    command: mongod --shardsvr --replSet shard1rs --port 27017 --dbpath /data/db
+    ports:
+      - 50011:27017
+    volumes:
+      - shard1s1:/data/db
+    networks:
+      - datalab
+
+  shard1s2:
+    container_name: shard1s2
+    image: mongo:4.4.6
+    hostname: shard1s2
+    command: mongod --shardsvr --replSet shard1rs --port 27017 --dbpath /data/db
+    ports:
+      - 50012:27017
+    volumes:
+      - shard1s2:/data/db
+    networks:
+      - datalab
+
+  shard1s3:
+    container_name: shard1s3
+    image: mongo:4.4.6
+    hostname: shard1s3
+    command: mongod --shardsvr --replSet shard1rs --port 27017 --dbpath /data/db
+    ports:
+      - 50013:27017
+    volumes:
+      - shard1s3:/data/db
+    networks:
+      - datalab
+
+#------------- Configuration d'un second replica set shard2rs
+
+  shard2s1:
+    container_name: shard2s1
+    image: mongo:4.4.6
+    hostname: shard2s1
+    command: mongod --shardsvr --replSet shard2rs --port 27017 --dbpath /data/db
+    ports:
+      - 50021:27017
+    volumes:
+      - shard2s1:/data/db
+    networks:
+      - datalab
+
+  shard2s2:
+    container_name: shard2s2
+    image: mongo:4.4.6
+    hostname: shard2s2
+    command: mongod --shardsvr --replSet shard2rs --port 27017 --dbpath /data/db
+    ports:
+      - 50022:27017
+    volumes:
+      - shard2s2:/data/db
+    networks:
+      - datalab
+
+  shard2s3:
+    container_name: shard2s3
+    image: mongo:4.4.6
+    hostname: shard2s3
+    command: mongod --shardsvr --replSet shard2rs --port 27017 --dbpath /data/db
+    ports:
+      - 50023:27017
+    volumes:
+      - shard2s3:/data/db
+    networks:
+      - datalab
+
+
+# ------   Mise en place d'un Mongo Service pour router vers les shards
+
+  mongos1:
+    container_name: mongos1
+    image: mongo:4.4.6
+    hostname: mongos1
+    command: mongos --configdb cfgrs/configs1:27017,configs2:27017,configs3:27017 --bind_ip 0.0.0.0 --port 27017
+    ports:
+      - 30000:27017
+    networks:
+      - datalab
+
+
+
+#################################
+# Client Mongo
+#################################
+
+  musicimportintosharedcollection:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - mongos1
+    volumes:
+      - ./mongodb:/dataimport
+    networks:
+      - datalab
+    command: >
+      mongoimport --uri 'mongodb://mongos1:27017' -d music -c collectionSharded --jsonArray /dataimport/spotify.json
+
+  moviesimportintosharedcollection:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - mongos1
+    volumes:
+      - ./mongodb:/dataimport
+    networks:
+      - datalab
+    command: >
+      mongoimport --uri 'mongodb://mongos1:27017' -d persons -c test --jsonArray /dataimport/movies.json
+
+  moviesimportintonoshardedcollection:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - mongos1
+    volumes:
+      - ./mongodb:/dataimport
+    networks:
+      - datalab
+    command: >
+      mongoimport --uri 'mongodb://mongos1:27017' -d music -c collectionNotSharded --jsonArray /dataimport/spotify.json
+
+
+volumes:
+  mongosingle-data: {}
+  mongo1-data: {}
+  mongo2-data: {}
+  mongo3-data: {}
+  shard1s1: {}
+  shard1s2: {}
+  shard1s3: {}
+  shard2s1: {}
+  shard2s2: {}
+  shard2s3: {}
+  configs1: {}
+  configs2: {}
+  configs3: {}
+

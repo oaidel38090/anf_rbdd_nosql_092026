@@ -1,0 +1,35 @@
+services:
+
+  neo4j-got:
+    image: neo4j:5.24
+    container_name: neo4j-got
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/anfneo4j2026
+    volumes:
+      - neo4j-got-data:/data
+      - neo4j-got-logs:/logs
+    networks:
+      - datalab
+      
+  neo4j-movies:
+    image: neo4j:5.24
+    container_name: neo4j-movies
+    ports:
+      - "7475:7474"
+      - "7688:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/anfneo4j2026
+    volumes:
+      - neo4j-movies-data:/data
+      - neo4j-movies-logs:/logs
+    networks:
+      - datalab
+  
+volumes:
+  neo4j-got-data:
+  neo4j-got-logs:
+  neo4j-movies-data:
+  neo4j-movies-logs:

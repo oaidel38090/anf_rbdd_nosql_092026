@@ -1,0 +1,106 @@
+services:
+
+
+
+#######################################
+# Configuration du cluster Redis      #
+#######################################
+
+  redis-node-1:
+    image: redis:latest
+    hostname: redis-node-1
+    container_name: redis-node-1
+    ports:
+      - 7000:7000
+    networks:
+      - datalab
+    volumes:
+      - ./redis/node1:/redis
+
+    command: redis-server /redis/redis.conf
+  redis-node-2:
+    image: redis:latest
+    hostname: redis-node-2
+    container_name: redis-node-2
+    ports:
+      - 7001:7000
+    networks:
+      - datalab
+    volumes:
+      - ./redis/node2:/redis
+    command: redis-server /redis/redis.conf
+
+  redis-node-3:
+    image: redis:latest
+    hostname: redis-node-3
+    container_name: redis-node-3
+    ports:
+      - 7003:7000
+    networks:
+      - datalab
+    volumes:
+      - ./redis/node3:/redis
+    command: redis-server /redis/redis.conf
+
+  redis-node-4:
+    image: redis:latest
+    hostname: redis-node-4
+    container_name: redis-node-4
+    ports:
+      - 7004:7000
+    networks:
+      - datalab
+    volumes:
+      - ./redis/node4:/redis
+    command: redis-server /redis/redis.conf
+
+  redis-node-5:
+    image: redis:latest
+    hostname: redis-node-5
+    container_name: redis-node-5
+    ports:
+      - 7005:7000
+    networks:
+      - datalab
+    volumes:
+      - ./redis/node5:/redis
+    command: redis-server /redis/redis.conf
+
+  redis-node-6:
+    image: redis:latest
+    hostname: redis-node-6
+    container_name: redis-node-6
+    ports:
+      - 7006:7000
+    networks:
+      - datalab
+    volumes:
+      - ./redis/node6:/redis
+    command: redis-server /redis/redis.conf
+
+  redis-cluster-creator:
+    image: redis:latest
+    hostname: redis-cluster-creator
+    container_name: redis-cluster-creator
+    networks:
+      - datalab
+    command: redis-cli -p 7000 --cluster create redis-node-1:7000 redis-node-2:7000 redis-node-3:7000 redis-node-4:7000 redis-node-5:7000 redis-node-6:7000 --cluster-replicas 1 --cluster-yes
+    depends_on:
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+      - redis-node-4
+      - redis-node-5
+      - redis-node-6
+
+  redis:
+    image: redis
+    container_name: 'redis'
+    ports:
+      - "7010:7000"
+    networks:
+      - datalab
+
+
+
+

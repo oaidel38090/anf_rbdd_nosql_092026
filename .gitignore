@@ -1,0 +1,13 @@
+**/.ipynb_checkpoints
+**/.ipython
+**/.jupyter
+**/.local
+**/.npm
+**/.cache
+**/.DS_Store
+*/.DS_Store
+**/*correction.ipynb
+support/*
+notes/*
+!.gitkeep
+docker/mongodb/spotify.json

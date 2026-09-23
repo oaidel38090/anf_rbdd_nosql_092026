@@ -1,0 +1,12 @@
+include:
+  - ./cassandra/docker-compose.yml
+  - ./clickhouse/docker-compose.yml
+  - ./jupyterlab/docker-compose.yml
+  - ./mongo/docker-compose.yml
+  - ./neo4j/docker-compose.yaml
+  - ./redis/docker-compose.yml
+
+networks:
+  datalab:
+    name: datalab
+    driver: bridge

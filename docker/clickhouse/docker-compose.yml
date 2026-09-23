@@ -1,0 +1,25 @@
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse-tp
+    ports:
+      - "8123:8123"   # HTTP
+      - "9000:9000"   # Native TCP
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    environment:
+      CLICKHOUSE_USER: clickhouseanf
+      CLICKHOUSE_PASSWORD: anfnosql2026
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_logs:/var/log/clickhouse-server
+    restart: unless-stopped
+    networks:
+      - datalab
+      
+volumes:
+  clickhouse_data:
+  clickhouse_logs:
