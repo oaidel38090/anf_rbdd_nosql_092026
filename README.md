@@ -111,7 +111,7 @@ ATTENTION, en cas d'échec, merci de bien vérifier l'url du dépôt lors du cop
 
 ```
 cd $monrepertoire
-git clone https://github_pat_REDACTED@github.com/oaidel38090/nosql_ynov_b3_2026.git
+git clone https://github.com/oaidel38090/anf_rbdd_nosql_092026.git
 ```
 
 
@@ -121,7 +121,7 @@ Positionner vous à présent dans le répertoire `anf_rbdd_nosql_092026/docker` 
 docker compose pull
 ```
 
-L'ensemble des cours et TP est disponible dans le répertoire git lequel sera mis à jour au fur et à mesure des avancées.
+L'ensemble des cours et TP sera disponible dans le répertoire git anf_rbdd_nosql_092026 lequel sera mis à jour au fur et à mesure des avancées.
 
 Pour vérifier que votre environnement est opérationnel lancer la commande suivante :
 
