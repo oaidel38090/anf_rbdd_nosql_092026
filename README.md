@@ -130,7 +130,7 @@ cd $monrepertoire/anf_rbdd_nosql_092026/docker
 docker compose up -d jupyterlab
 ```
 
-Cette commande va lancer l'application jupyterlab sur votre ordinateur et sera accessible à l'url [http://127.0.0.1:8888/lab](http://127.0.0.1:8888/lab).
+Cette commande va lancer l'application jupyterlab sur votre ordinateur et sera accessible à l'url [http://127.0.0.1:2026/lab](http://127.0.0.1:2026/lab).
 La page suivante devrait apparaitre :
 
 
