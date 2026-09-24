@@ -144,7 +144,7 @@ docker stop jupyterlab
 ```
 
 
-## 4 - GUI TP MongoDB – Un peu de confort pour vos yeux 👀
+## 4 - GUI – Un peu de confort pour vos yeux 👀
 
 Dans le cadre des TP MongoDB, et pour éviter que la syntaxe en ligne de commande n’agresse trop vos yeux 😉, nous vous invitons à installer NoSQLBooster for MongoDB.
 
