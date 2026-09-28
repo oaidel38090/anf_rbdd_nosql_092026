@@ -99,11 +99,24 @@
 "director": 	{
 	"_id": "artist:9",
 	"last_name": "Tarkovski",
-	"first_name": "Andrei",
+	"first_name": "Clint",
 	"birth_date": "1932"	
 	},
 "actors": [
-
+        {
+          "_id": "artist:11",
+          "first_name": "Clint",
+          "last_name": "Travolta",
+          "birth_date": "1954",
+          "role": "Sean Archer/Castor Troy"
+        },
+        {
+          "_id": "artist:12",
+          "first_name": "Steve",
+          "last_name": "Eastwood",
+          "birth_date": "1954",
+          "role": "Sean Archer/Castor Troy"
+        }
 	]
 },
 {
@@ -3135,5 +3148,4 @@
 
 	]
 }
-
 ]

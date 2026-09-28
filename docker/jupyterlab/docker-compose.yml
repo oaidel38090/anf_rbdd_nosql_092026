@@ -12,6 +12,7 @@ services:
               pip install --quiet cassandra-driver &&
               pip install neo4j &&
               pip install clickhouse-connect &&
+              pip install redis &&
               start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''"
       volumes:
         - ../../:/home/jovyan/rbdd

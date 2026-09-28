@@ -30,6 +30,84 @@ services:
     command: >
       mongoimport --uri 'mongodb://mongosingle:27017' --drop -d training -c movies --jsonArray /dataimport/movies.json
 
+  loaddatazipsintomongosingle:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - mongosingle
+    volumes:
+      - ./mongodb:/dataimport
+    networks:
+      - datalab
+    command: >
+      mongoimport --db training --collection "zips" --drop --type json --host "mongosingle:27017"  --file "/dataimport/zips.json"
+
+  loaddatausersintomongosingle:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - mongosingle
+    volumes:
+      - ./mongodb:/dataimport
+    networks:
+      - datalab
+    command: >
+      mongoimport --uri 'mongodb://mongosingle:27017' --drop -d singlepattern -c users --jsonArray /dataimport/users.json
+
+  loaddatareviewsintomongosingle:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - mongosingle
+    volumes:
+      - ./mongodb:/dataimport
+    networks:
+      - datalab
+    command: >
+      mongoimport --uri 'mongodb://mongosingle:27017' --drop -d singlepattern -c reviews --jsonArray /dataimport/reviews.json
+
+  loaddatabooksintomongosingle:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - mongosingle
+    volumes:
+      - ./mongodb:/dataimport
+    networks:
+      - datalab
+    command: >
+      mongoimport --uri 'mongodb://mongosingle:27017' --drop -d singlepattern -c books --jsonArray /dataimport/books.json
+
+  loaddatatripsintomongosingle:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - mongosingle
+    volumes:
+      - ./mongodb:/dataimport
+    networks:
+      - datalab
+    command: >
+      mongoimport --db training --collection "trips" --drop --type json --host "mongosingle:27017"  --file "/dataimport/trips.json"
+
+  loaddatacompaniesintomongosingle:
+    image: mongo:4.4.6
+    # this container will exit after executing the command
+    restart: "no"
+    depends_on:
+      - mongosingle
+    volumes:
+      - ./mongodb:/dataimport
+    networks:
+      - datalab
+    command: >
+      mongoimport --db training --collection "companies" --drop --type json --host "mongosingle:27017"  --file "/dataimport/companies.json"
+
 
 #######################################################
 # Configuration d'un cluster MongoDB en replicaset    #
@@ -42,6 +120,12 @@ services:
     ports:
       - 30001:27017
     command: mongod --replSet my-mongo-set
+    healthcheck:
+      test: ["CMD", "mongo", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+      start_period: 5s
     volumes:
       - mongo1-data:/data/db
     networks:
@@ -54,6 +138,12 @@ services:
     ports:
       - 30002:27017
     command: mongod --replSet my-mongo-set
+    healthcheck:
+      test: ["CMD", "mongo", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+      start_period: 5s
     volumes:
       - mongo2-data:/data/db
     networks:
@@ -66,6 +156,12 @@ services:
     ports:
       - 30003:27017
     command: mongod --replSet my-mongo-set
+    healthcheck:
+      test: ["CMD", "mongo", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+      start_period: 5s
     volumes:
       - mongo3-data:/data/db
     networks:
@@ -79,9 +175,12 @@ services:
     # this container will exit after executing the command
     restart: "no"
     depends_on:
-      - mongo1
-      - mongo2
-      - mongo3
+      mongo1:
+        condition: service_healthy
+      mongo2:
+        condition: service_healthy
+      mongo3:
+        condition: service_healthy
     networks:
       - datalab
     command: >
@@ -213,9 +312,12 @@ services:
     # this container will exit after executing the command
     restart: "no"
     depends_on:
-      - mongo1
-      - mongo2
-      - mongo3
+      mongo1:
+        condition: service_healthy
+      mongo2:
+        condition: service_healthy
+      mongo3:
+        condition: service_healthy
     volumes:
       - ./mongodb:/dataimport
     networks:

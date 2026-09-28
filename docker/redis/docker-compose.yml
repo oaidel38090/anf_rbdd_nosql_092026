@@ -11,7 +11,7 @@ services:
     hostname: redis-node-1
     container_name: redis-node-1
     ports:
-      - 7000:7000
+      - 7001:7000
     networks:
       - datalab
     volumes:
@@ -23,12 +23,14 @@ services:
     hostname: redis-node-2
     container_name: redis-node-2
     ports:
-      - 7001:7000
+      - 7002:7000
     networks:
       - datalab
     volumes:
       - ./redis/node2:/redis
     command: redis-server /redis/redis.conf
+    depends_on:
+      - redis-node-1
 
   redis-node-3:
     image: redis:latest
@@ -41,6 +43,8 @@ services:
     volumes:
       - ./redis/node3:/redis
     command: redis-server /redis/redis.conf
+    depends_on:
+      - redis-node-2
 
   redis-node-4:
     image: redis:latest
@@ -53,6 +57,8 @@ services:
     volumes:
       - ./redis/node4:/redis
     command: redis-server /redis/redis.conf
+    depends_on:
+      - redis-node-3
 
   redis-node-5:
     image: redis:latest
@@ -65,6 +71,8 @@ services:
     volumes:
       - ./redis/node5:/redis
     command: redis-server /redis/redis.conf
+    depends_on:
+      - redis-node-4
 
   redis-node-6:
     image: redis:latest
@@ -77,6 +85,8 @@ services:
     volumes:
       - ./redis/node6:/redis
     command: redis-server /redis/redis.conf
+    depends_on:
+      - redis-node-5
 
   redis-cluster-creator:
     image: redis:latest
@@ -97,9 +107,27 @@ services:
     image: redis
     container_name: 'redis'
     ports:
-      - "7010:7000"
+      - "7010:6379"
     networks:
       - datalab
+
+  redis-publisher:
+    image: redis
+    container_name: redis-publisher
+    depends_on:
+      - redis
+    networks:
+      - datalab
+    command: ["sh", "-c", "while true; do sleep 3600; done"]
+
+  redis-subscriber:
+    image: redis
+    container_name: redis-subscriber
+    depends_on:
+      - redis
+    networks:
+      - datalab
+    command: ["sh", "-c", "while true; do sleep 3600; done"]
 
 
 

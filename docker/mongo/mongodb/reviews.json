@@ -1,0 +1,51 @@
+[       
+    {
+    	"_id" : 66,
+    	"review_id" : 66,
+    	"text" : "That's ok!",
+    	"book_id" : 34538756,
+    	"user_id" : 222,
+    	"rating" : 3
+    },
+    {
+    	"_id" : 55,
+    	"review_id" : 55,
+    	"text" : "It's a bullshit !",
+    	"book_id" : 34538758,
+    	"user_id" : 111,
+    	"rating" : 0
+    },
+    {
+    	"_id" : 44,
+    	"review_id" : 44,
+    	"text" : "This book was insanely great.",
+    	"book_id" : 34538758,
+    	"user_id" : 222,
+    	"rating" : 5
+    },
+    {
+    	"_id" : 33,
+    	"review_id" : 33,
+    	"text" : "This book was insanely great.",
+    	"book_id" : 34538758,
+    	"user_id" : 333,
+    	"rating" : 5
+    },
+    {
+    	"_id" : 22,
+    	"review_id" : 22,
+    	"text" : "This book was good.",
+    	"book_id" : 34538757,
+    	"user_id" : 222,
+    	"rating" : 1
+    },
+    {
+    	"_id" : 11,
+    	"review_id" : 11,
+    	"text" : "This book was pretty good.",
+    	"book_id" : 34538756,
+    	"user_id" : 111,
+    	"rating" : 3
+    }
+    
+]

@@ -1,0 +1,7 @@
+<clickhouse>
+    <macros>
+        <cluster>datalab_cluster</cluster>
+        <shard>01</shard>
+        <replica>clickhouse-02</replica>
+    </macros>
+</clickhouse>

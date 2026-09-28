@@ -1,0 +1,26 @@
+[
+  {
+    "_id": 111,
+    "user_id": 111,
+    "name": "Alice",
+    "email": "alice@example.com",
+    "recent_reviews": [11],
+    "purchased_books": [34538756]
+  },
+  {
+    "_id": 222,
+    "user_id": 222,
+    "name": "Bob",
+    "email": "bob@example.com",
+    "recent_reviews": [22],
+    "purchased_books": [34538757]
+  },
+  {
+    "_id": 333,
+    "user_id": 333,
+    "name": "Charlie",
+    "email": "charlie@example.com",
+    "recent_reviews": [33],
+    "purchased_books": [34538758]
+  }
+]

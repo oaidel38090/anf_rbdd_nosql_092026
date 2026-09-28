@@ -1,0 +1,55 @@
+[
+  {
+    "_id": 2,
+    "product_id": 34538757,
+    "product_type": "book",
+    "title": "Practical MongoDB Aggregations",
+    "description": "The official guide to developing optimal aggregation pipelines with MongoDB 7.0",
+    "authors": ["Paul Done"],
+    "publisher": "MongoDB Press",
+    "language": "English",
+    "pages": 312,
+    "catalogues": {
+      "isbn10": "1835080642",
+      "isbn13": "978-1835080641"
+    }
+  },
+  {
+    "_id": 1,
+    "product_id": 34538756,
+    "product_type": "book",
+    "title": "MongoDB: The Definitive Guide: Powerful and Scalable Data Storage",
+    "description": "MongoDB explained by MongoDB champions",
+    "authors": ["Shannon Bradshaw", "Eoin Brazil", "Christina Chodorow"],
+    "publisher": "O'Reilly",
+    "language": "English",
+    "pages": 514,
+    "catalogues": {
+      "isbn10": "1491954469",
+      "isbn13": "978-1491954461"
+    }
+  },
+  {
+    "_id": 3,
+    "product_id": 34538758,
+    "product_type": "book",
+    "title": "Mastering MongoDB 7.0",
+    "description": "Explore the full potential of MongoDB 7.0 with this comprehensive guide. Mastering MongoDB 7.0 offers powerful techniques for efficient data manipulation, application integration, and security. This intermediate-to-master level book helps individuals utilize the latest version of MongoDB to achieve its full potential.",
+    "authors": [
+      "Marko Aleksendric",
+      "Arek Borucki",
+      "Leandro Domingues",
+      "Malak Abu Hammad",
+      "Elie Hannouch",
+      "Rajesh Nair",
+      "Rachelle Palmer"
+    ],
+    "publisher": "MongoDB Press",
+    "language": "English",
+    "pages": 185,
+    "catalogues": {
+      "isbn10": "183546047X",
+      "isbn13": "978-1835460474"
+    }
+  }
+]
