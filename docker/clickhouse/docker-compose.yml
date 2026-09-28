@@ -88,6 +88,11 @@ services:
       - datalab
     restart: unless-stopped
 
+networks:
+  datalab:
+    name: datalab
+    driver: bridge
+
 volumes:
   clickhouse_data_01:
   clickhouse_data_02:
