@@ -9,4 +9,4 @@ include:
 networks:
   datalab:
     name: datalab
-    driver: host
+    driver: bridge

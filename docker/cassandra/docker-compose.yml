@@ -79,10 +79,6 @@ services:
     networks:
       - datalab
 
-networks:
-  datalab:
-    driver: bridge
-    name: datalab
 
 volumes:
   cassandra_data_1:
@@ -91,6 +87,11 @@ volumes:
 
 
 
+
+networks:
+  datalab:
+    driver: bridge
+    name: datalab
 
 
 ################################################################################
