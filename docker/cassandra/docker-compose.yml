@@ -1,13 +1,21 @@
 services:
-  cassandra-tp:
+  cassandra-1:
     image: cassandra:4.1
-    container_name: cassandra-tp
+    container_name: cassandra-1
     ports:
-      - "9042:9042"      # port CQL natif
+      - "9042:9042"      # port CQL natif (uniquement sur le nœud 1)
     environment:
       - CASSANDRA_CLUSTER_NAME=TP_Cluster
+      - CASSANDRA_SEEDS=cassandra-1
+      - CASSANDRA_BROADCAST_ADDRESS=cassandra-1
+      - CASSANDRA_LISTEN_ADDRESS=cassandra-1
+      - CASSANDRA_RPC_ADDRESS=0.0.0.0
+      - CASSANDRA_NUM_TOKENS=256
+      - CASSANDRA_DC=datacenter1
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
     volumes:
-      - cassandra_data:/var/lib/cassandra
+      - cassandra_data_1:/var/lib/cassandra
     healthcheck:
       test: ["CMD-SHELL", "cqlsh -e 'describe cluster' || exit 1"]
       interval: 10s
@@ -17,8 +25,69 @@ services:
     networks:
       - datalab
 
+  cassandra-2:
+    image: cassandra:4.1
+    container_name: cassandra-2
+    environment:
+      - CASSANDRA_CLUSTER_NAME=TP_Cluster
+      - CASSANDRA_SEEDS=cassandra-1
+      - CASSANDRA_BROADCAST_ADDRESS=cassandra-2
+      - CASSANDRA_LISTEN_ADDRESS=cassandra-2
+      - CASSANDRA_RPC_ADDRESS=0.0.0.0
+      - CASSANDRA_NUM_TOKENS=256
+      - CASSANDRA_DC=datacenter1
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+    volumes:
+      - cassandra_data_2:/var/lib/cassandra
+    depends_on:
+      cassandra-1:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'describe cluster' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+    networks:
+      - datalab
+
+  cassandra-3:
+    image: cassandra:4.1
+    container_name: cassandra-3
+    environment:
+      - CASSANDRA_CLUSTER_NAME=TP_Cluster
+      - CASSANDRA_SEEDS=cassandra-1
+      - CASSANDRA_BROADCAST_ADDRESS=cassandra-3
+      - CASSANDRA_LISTEN_ADDRESS=cassandra-3
+      - CASSANDRA_RPC_ADDRESS=0.0.0.0
+      - CASSANDRA_NUM_TOKENS=256
+      - CASSANDRA_DC=datacenter1
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+    volumes:
+      - cassandra_data_3:/var/lib/cassandra
+    depends_on:
+      cassandra-1:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'describe cluster' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+    networks:
+      - datalab
+
+networks:
+  datalab:
+    driver: bridge
+    name: datalab
+
 volumes:
-  cassandra_data:
+  cassandra_data_1:
+  cassandra_data_2:
+  cassandra_data_3:
 
 
 
